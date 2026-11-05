@@ -1,0 +1,11 @@
+{
+  "name": "phantom-blade-player-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node tests/verify.mjs",
+    "start": "node server.mjs"
+  }
+}
