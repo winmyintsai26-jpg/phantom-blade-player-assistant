@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Evidence-aware Phantom Blade Zero troubleshooting and quest progress companion">
+<title>Phantom Blade Zero | Player Problem Solver</title>
+<style>
+body{font:16px system-ui;background:#11151c;color:#eef1f6;margin:0}
+main{max-width:840px;margin:auto;padding:30px 18px}
+header{padding:24px 0;border-bottom:1px solid #384251}
+h1{font-size:2rem}h2{margin-top:32px}p,li{line-height:1.65}
+.muted{color:#aab4c4}.panel{background:#1d2632;padding:20px;border-radius:12px;margin:18px 0}
+button,select{font:inherit;border-radius:7px;padding:12px;margin:5px 4px 5px 0}
+button{background:#d7b46a;color:#111;cursor:pointer;border:0}
+button:focus,select:focus{outline:3px solid #fff}
+select{background:#fff;max-width:100%;width:100%}
+a{color:#f0cb7f}.warning{border-left:4px solid #e6b35d;padding-left:12px}
+footer{margin-top:50px;color:#b6c1d1}
+</style></head><body><main>
+<header><div class="muted">Unofficial • Evidence-aware • No login</div>
+<h1>Phantom Blade Zero: Solve Your Problem</h1>
+<p>Choose what happened. Follow checks supported by a published guide, or see a clear warning when a fix is unverified.</p></header>
+<section class="panel"><label for="topic"><strong>1. What do you need help with?</strong></label><select id="topic"></select>
+<label for="symptom"><strong>2. What describes your situation?</strong></label><select id="symptom"></select>
+<div id="result" aria-live="polite"></div></section>
+<section class="panel"><h2>Did it solve your problem?</h2><button id="yes">Yes, solved</button><button id="no">No, still stuck</button>
+<p id="feedback" class="muted">Feedback stays on this device. It is not submitted to us.</p></section>
+<footer>Game-specific instructions are labeled with sources. No claim of independent in-game testing. Verify the current game version before irreversible decisions.</footer>
+</main><script type="module" src="./app.js"></script></body></html>
