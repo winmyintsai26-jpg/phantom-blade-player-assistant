@@ -1,32 +1,25 @@
-const POWER='https://www.powerpyx.com/phantom-blade-zero-true-ending-guide/';
-const STEAM='https://store.steampowered.com/app/4115450/Phantom_Blade_Zero/';
-const topics=[
-{id:'ending',name:'True ending requirements',options:[
-['I have not entered Mirage Estate','Compare the required purple quest checklist with your in-game journal before entering Mirage Estate. The linked walkthrough describes this as a cutoff.',POWER,'Published guide; not independently play-tested'],
-['I already entered Mirage Estate','Check your completed quest journal and existing saves. Do not assume the true ending is still reachable; this site cannot verify recovery.',POWER,'Outcome unverified'],
-['I am near the final sequence','Check whether Bloodline Awakening is completed, and review remaining objectives before continuing.',POWER,'Published guide; not independently play-tested']]},
-{id:'quest',name:'Illusory Pipa quest will not progress',options:[
-['I cannot find the quest','Check your in-game journal, region and story progression. This site has not verified the unlock condition; consult the walkthrough before moving on.',POWER,'No verified unlock diagnosis'],
-['The objective is stuck','Write down the exact objective, region, platform and game version. Check current support or patch notes. No reproducible fix is verified here.',STEAM,'No verified fix'],
-['I moved beyond the area','Check the published progression cutoff guidance and available saves before taking irreversible action.',POWER,'Recovery not verified']]},
-{id:'missable',name:'Am I about to miss content?',options:[
-['Entering Mirage Estate','Stop and compare your in-game quest log with the pre-cutoff checklist in the linked guide. Do not rely on a completion percentage alone.',POWER,'Published guide; not independently play-tested'],
-['Advancing in Mount Soulrend','Review Bloodline Awakening and any unfinished side quests before continuing.',POWER,'Published guide; not independently play-tested'],
-['I do not know the next region','Check the current objective and map. This site does not have a verified complete region order.',STEAM,'Region order unverified']]},
-{id:'combat',name:'I keep losing a fight',options:[
-['I cannot recognize openings','Spend one attempt observing a repeated enemy attack sequence. Test one safe response at a time. This is general practice advice, not a verified boss strategy.',STEAM,'General advice only'],
-['I keep taking damage while defending','Compare blocking, evasion and parry against one repeated move. Do not assume one defense works against every attack.',STEAM,'General advice only'],
-['I need a specific boss solution','No boss-specific solution has passed verification. Use a recorded fight walkthrough; do not trust invented attack timings.',STEAM,'No verified boss-specific fix']]},
-{id:'pc',name:'My PC stutters or crashes',options:[
-['It happens at launch','Compare your hardware with the official Steam requirements; record the error, game version and GPU driver.',STEAM,'Official requirements; diagnosis unverified'],
-['It happens during combat','Repeat the same scene while changing one reversible graphics setting at a time, and compare results.',STEAM,'General troubleshooting only'],
-['It crashes repeatedly','Record crash details and consult current official support and patch notes. There is no verified universal fix.',STEAM,'No verified universal fix']]}
-];
-const topic=document.querySelector('#topic'),symptom=document.querySelector('#symptom'),result=document.querySelector('#result');
-const escapeHTML=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-topics.forEach(t=>topic.add(new Option(t.name,t.id)));
-function renderOptions(){const t=topics.find(x=>x.id===topic.value);symptom.replaceChildren(...t.options.map((x,i)=>new Option(x[0],String(i))));renderResult()}
-function renderResult(){const t=topics.find(x=>x.id===topic.value),x=t.options[Number(symptom.value)];result.innerHTML='<h2>3. Recommended next steps</h2><p>'+escapeHTML(x[1])+'</p><p class="warning"><strong>Evidence status:</strong> '+escapeHTML(x[3])+'</p><p><a target="_blank" rel="noopener noreferrer" href="'+x[2]+'">Open source / support page</a></p>';document.querySelector('#feedback').textContent='Feedback stays on this device. It is not submitted to us.'}
-topic.addEventListener('change',renderOptions);symptom.addEventListener('change',renderResult);
-for(const [id,value] of [['yes','solved'],['no','not-solved']])document.querySelector('#'+id).addEventListener('click',()=>{try{localStorage.setItem('pbz-feedback-'+topic.value+'-'+symptom.value,value)}catch{}document.querySelector('#feedback').textContent=value==='solved'?'Marked solved on this device.':'Marked still stuck on this device. This guide does not claim a confirmed fix.'});
-renderOptions();
+import {guides} from './guides.js';
+const $=s=>document.querySelector(s);
+const app=$('#app');
+const cats=['All','Walkthrough','Quests','Endings'];
+let filter='All',search='';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const key=(id,n)=>'pbz-v2-'+id+'-'+n;
+const done=(id,n)=>{try{return localStorage.getItem(key(id,n))==='1'}catch{return false}};
+const save=(id,n,v)=>{try{localStorage.setItem(key(id,n),v?'1':'0')}catch{}};
+function home(){history.replaceState(null,'','#/');renderHome()}
+function renderHome(){
+const list=guides.filter(g=>(filter==='All'||g.category===filter)&&[g.title,g.summary,g.category,...g.checklist].join(' ').toLowerCase().includes(search.toLowerCase()));
+app.innerHTML='<section class="hero"><p class="eyebrow">UNOFFICIAL PLAYER GUIDE • ENGLISH</p><h1>Find your way forward.</h1><p>Step-by-step quest routes, missable checkpoints and in-game verification. No empty answers. No invented fixes.</p><label class="sr" for="search">Search guides</label><input id="search" type="search" placeholder="Search quest, ending, region..." value="'+esc(search)+'"></section><div class="chips">'+cats.map(c=>'<button class="chip '+(c===filter?'active':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div><div class="meta">'+list.length+' guides · last content review Nov 5, 2026</div><div class="cards">'+list.map(g=>'<a class="guide-card" href="#/guide/'+g.id+'"><span class="eyebrow">'+esc(g.category)+'</span><h2>'+esc(g.title)+'</h2><p>'+esc(g.summary)+'</p><span class="detail">Read steps & checklist →</span></a>').join('')+'</div>'+(list.length?'':'<p>No matching guide yet. Try another term.</p>')+'<section class="note"><h2>What this site does and does not promise</h2><p>We turn cited guides into original, actionable checklists. Your progress is stored on this device only. We do not claim to have played every route or verified every patch. When sources disagree, we tell you.</p></section>';
+$('#search').addEventListener('input',e=>{search=e.target.value;const start=e.target.selectionStart;renderHome();const el=$('#search');el.focus();el.setSelectionRange(start,start)});
+document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.cat;renderHome()}));
+}
+function renderGuide(g){
+const count=g.checklist.filter((_,i)=>done(g.id,i)).length;
+app.innerHTML='<a href="#/" class="back">← All guides</a><article class="article"><p class="eyebrow">'+esc(g.category)+' • '+esc(g.level)+'</p><h1>'+esc(g.title)+'</h1><p class="lead">'+esc(g.intro)+'</p><div class="note"><strong>Before you begin</strong><p>Check your game journal and keep a manual save before irreversible story decisions. These steps summarize sources; they are not an in-game success guarantee.</p></div><h2>Step-by-step walkthrough</h2><ol class="steps">'+g.steps.map(s=>'<li><h3>'+esc(s.title)+'</h3><p>'+esc(s.detail)+'</p><p class="verify"><strong>How to confirm:</strong> '+esc(s.verify)+'</p></li>').join('')+'</ol><section class="check-panel"><div class="between"><h2>Interactive checklist</h2><button id="reset" class="small">Reset</button></div><p id="progress" aria-live="polite">'+count+' / '+g.checklist.length+' checked on this device</p><div class="bar"><div style="width:'+(count/g.checklist.length*100)+'%"></div></div>'+g.checklist.map((item,i)=>'<label class="check"><input type="checkbox" data-check="'+i+'" '+(done(g.id,i)?'checked':'')+'><span>'+esc(item)+'</span></label>').join('')+'<p class="hint">Checking a box does not verify completion in the game. Compare against your journal.</p></section><h2>Still stuck?</h2><div class="troubleshoot">'+g.stuck.map(([q,a],i)=>'<details><summary>'+esc(q)+'</summary><p>'+esc(a)+'</p></details>').join('')+'</div><h2>Sources and editorial status</h2><p class="hint">Source links are evidence, not a substitute for the steps above. Game versions and source interpretations can differ.</p><ul class="sources">'+g.sources.map(([name,url])=>'<li><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(name)+' ↗</a></li>').join('')+'</ul><p class="hint">Reviewed '+esc(g.updated)+'</p><div class="feedback"><h2>Was this guide useful?</h2><button data-feedback="yes">It helped</button><button data-feedback="no" class="secondary">Still stuck</button><p id="feedback-note" aria-live="polite">Your answer stays in this browser. No remote feedback collection is enabled yet.</p></div></article>';
+document.querySelectorAll('[data-check]').forEach(el=>el.addEventListener('change',()=>{save(g.id,Number(el.dataset.check),el.checked);renderGuide(g)}));
+$('#reset').addEventListener('click',()=>{g.checklist.forEach((_,i)=>save(g.id,i,false));renderGuide(g)});
+document.querySelectorAll('[data-feedback]').forEach(b=>b.addEventListener('click',()=>{try{localStorage.setItem('pbz-guide-feedback-'+g.id,b.dataset.feedback)}catch{}$('#feedback-note').textContent=b.dataset.feedback==='yes'?'Saved locally: this guide helped.':'Saved locally: still stuck. This is not sent to the team yet.'}));
+}
+function route(){const id=location.hash.match(/^#\/guide\/([a-z0-9-]+)$/)?.[1];const g=guides.find(x=>x.id===id);if(g)renderGuide(g);else renderHome();window.scrollTo(0,0)}
+window.addEventListener('hashchange',route);route();
