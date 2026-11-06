@@ -4,13 +4,21 @@ const app=$('#app');
 const cats=['All','Walkthrough','Quests','Endings'];
 let filter='All',search='';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const symbols={
+'true-ending':'<path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/>',
+'missables':'<path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="m16 16 2 2"/>',
+'long-pillars':'<path d="M7 20V6l5-3 5 3v14"/><path d="M5 20h14M9 9h6M9 13h6"/>',
+'healers-legacy':'<path d="M12 3v18M3 12h18"/><path d="M6 6 4 4M18 18l2 2"/>',
+'severed-mindseal':'<path d="M12 2 4 6v6c0 5 3 8 8 10 5-2 8-5 8-10V6l-8-4Z"/><path d="m9 9 6 6m0-6-6 6"/>'
+};
+const guideIcon=id=>'<span class="guide-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+(symbols[id]||symbols.missables)+'</svg></span>';
 const key=(id,n)=>'pbz-v2-'+id+'-'+n;
 const done=(id,n)=>{try{return localStorage.getItem(key(id,n))==='1'}catch{return false}};
 const save=(id,n,v)=>{try{localStorage.setItem(key(id,n),v?'1':'0')}catch{}};
 function home(){history.replaceState(null,'','#/');renderHome()}
 function renderHome(){
 const list=guides.filter(g=>(filter==='All'||g.category===filter)&&[g.title,g.summary,g.category,...g.checklist].join(' ').toLowerCase().includes(search.toLowerCase()));
-app.innerHTML='<section class="hero"><p class="eyebrow">UNOFFICIAL PLAYER GUIDE • ENGLISH</p><h1>Find your way forward.</h1><p>Step-by-step quest routes, missable checkpoints and in-game verification. No empty answers. No invented fixes.</p><label class="sr" for="search">Search guides</label><input id="search" type="search" placeholder="Search quest, ending, region..." value="'+esc(search)+'"></section><div class="chips">'+cats.map(c=>'<button class="chip '+(c===filter?'active':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div><div class="meta">'+list.length+' guides · last content review Nov 5, 2026</div><div class="cards">'+list.map(g=>'<a class="guide-card" href="#/guide/'+g.id+'"><span class="eyebrow">'+esc(g.category)+'</span><h2>'+esc(g.title)+'</h2><p>'+esc(g.summary)+'</p><span class="detail">Read steps & checklist →</span></a>').join('')+'</div>'+(list.length?'':'<p>No matching guide yet. Try another term.</p>')+'<section class="note"><h2>What this site does and does not promise</h2><p>We turn cited guides into original, actionable checklists. Your progress is stored on this device only. We do not claim to have played every route or verified every patch. When sources disagree, we tell you.</p></section>';
+app.innerHTML='<section class="hero"><p class="eyebrow">UNOFFICIAL PLAYER GUIDE • ENGLISH</p><h1>Find your way forward.</h1><p>Step-by-step quest routes, missable checkpoints and in-game verification. No empty answers. No invented fixes.</p><label class="sr" for="search">Search guides</label><input id="search" type="search" placeholder="Search quest, ending, region..." value="'+esc(search)+'"></section><div class="chips">'+cats.map(c=>'<button class="chip '+(c===filter?'active':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div><div class="meta">'+list.length+' guides · last content review Nov 5, 2026</div><div class="cards">'+list.map(g=>'<a class="guide-card" href="#/guide/'+g.id+'">'+guideIcon(g.id)+'<span class="eyebrow">'+esc(g.category)+'</span><h2>'+esc(g.title)+'</h2><p>'+esc(g.summary)+'</p><span class="detail">Read steps & checklist →</span></a>').join('')+'</div>'+(list.length?'':'<p>No matching guide yet. Try another term.</p>')+'<section class="note"><h2>What this site does and does not promise</h2><p>We turn cited guides into original, actionable checklists. Your progress is stored on this device only. We do not claim to have played every route or verified every patch. When sources disagree, we tell you.</p></section>';
 $('#search').addEventListener('input',e=>{search=e.target.value;const start=e.target.selectionStart;renderHome();const el=$('#search');el.focus();el.setSelectionRange(start,start)});
 document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.cat;renderHome()}));
 }
