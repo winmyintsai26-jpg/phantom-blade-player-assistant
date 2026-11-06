@@ -19,6 +19,8 @@ for(const g of guides){
  page=page.replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="'+attr(g.summary)+'">');
  page=page.replace('</head>',canonical(url)+'<meta property="og:type" content="article"><meta property="og:title" content="'+attr(title)+'"><meta property="og:description" content="'+attr(g.summary)+'"><meta property="og:url" content="'+url+'"></head>');
  page=page.replace('src="./app.js"','src="/app.js"');
+ const staticContent='<article class="article"><p class="eyebrow">'+xmlEscape(g.category)+'</p><h1>'+xmlEscape(g.title)+'</h1><p>'+xmlEscape(g.intro)+'</p><h2>Step-by-step walkthrough</h2><ol class="steps">'+g.steps.map(step=>'<li><h3>'+xmlEscape(step.title)+'</h3><p>'+xmlEscape(step.detail)+'</p><p><strong>How to confirm:</strong> '+xmlEscape(step.verify)+'</p></li>').join('')+'</ol><h2>Checklist</h2><ul>'+g.checklist.map(item=>'<li>'+xmlEscape(item)+'</li>').join('')+'</ul><h2>Sources</h2><ul>'+g.sources.map(([name,url])=>'<li><a href="'+attr(url)+'">'+xmlEscape(name)+'</a></li>').join('')+'</ul></article>';
+ page=page.replace('<main id="app"></main>','<main id="app">'+staticContent+'</main>');
  const dir=path.join('dist','guides',g.id);fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,'index.html'),page);
 }
 const urls=[{loc:base+'/',lastmod:'2026-11-05'},...guides.map(g=>({loc:base+'/guides/'+g.id+'/',lastmod:g.updated}))];
