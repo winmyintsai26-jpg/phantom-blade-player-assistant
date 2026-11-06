@@ -50,5 +50,5 @@ document.querySelectorAll('[data-check]').forEach(el=>el.addEventListener('chang
 $('#reset').addEventListener('click',()=>{g.checklist.forEach((_,i)=>save(g.id,i,false));renderGuide(g)});
 document.querySelectorAll('[data-feedback]').forEach(b=>b.addEventListener('click',()=>{try{localStorage.setItem('pbz-guide-feedback-'+g.id,b.dataset.feedback)}catch{}$('#feedback-note').textContent=b.dataset.feedback==='yes'?'Saved locally: this guide helped.':'Saved locally: still stuck. This is not sent to the team yet.'}));
 }
-function route(){const id=location.hash.match(/^#\/guide\/([a-z0-9-]+)$/)?.[1];const g=guides.find(x=>x.id===id);if(g)renderGuide(g);else renderHome();window.scrollTo(0,0)}
+function route(){const id=location.pathname.match(/^\/guides\/([a-z0-9-]+)\/?$/)?.[1] || location.hash.match(/^#\/guide\/([a-z0-9-]+)$/)?.[1];const g=guides.find(x=>x.id===id);if(g)renderGuide(g);else renderHome();window.scrollTo(0,0)}
 window.addEventListener('hashchange',route);route();
