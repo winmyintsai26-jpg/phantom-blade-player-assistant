@@ -23,7 +23,14 @@ const scene=id=>{
  };
  return '<svg class="scene-svg" viewBox="0 0 800 300" role="img" aria-label="Original decorative illustration; not an in-game screenshot" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g-'+id+'" x2="0" y2="1"><stop stop-color="'+a.sky+'"/><stop offset="1" stop-color="'+a.hill+'"/></linearGradient></defs><rect width="800" height="300" fill="url(#g-'+id+')"/><circle cx="590" cy="77" r="43" fill="'+a.accent+'" opacity=".55"/><path d="M0 190 135 94 265 185 382 112 510 190 640 115 800 194V300H0Z" fill="#0d1820" opacity=".55"/><path d="M0 235 175 165 335 236 520 164 700 233 800 200V300H0Z" fill="#0d151a" opacity=".6"/><g fill="none" stroke="'+a.accent+'" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity=".88">'+details[a.kind]+'</g><path d="M0 260Q200 230 400 265T800 255" fill="none" stroke="#d5c4a6" stroke-opacity=".15" stroke-width="13"/></svg>';
 };
-const cardArt=id=>'<div class="guide-cover">'+scene(id)+'<span class="image-credit">Original illustrated artwork</span></div>';
+const officialShots=[
+'https://www.phantombladezero-guide.cc/_astro/ss_b0e2a5cbc38c67ffa2264d4067a6dc26aff2d9c6.1920x1080.D8cRrvyE_Z1vFmuK.webp',
+'https://www.phantombladezero-guide.cc/_astro/ss_53cc6faf8d70d29593495b2eaffc4c08761989ce.1920x1080.CfCq0JV4_Z1vMSLJ.webp',
+'https://www.phantombladezero-guide.cc/_astro/ss_b2ebc232d3d88eafa8546f65b90d8dc8d2ece0b4.1920x1080.C6Xbkr-2_1Wqazq.webp'
+];
+const shotFor=id=>officialShots[Math.max(0,guides.findIndex(g=>g.id===id))%officialShots.length];
+const shot=(id)=>'<img class="official-shot" src="'+shotFor(id)+'" loading="lazy" alt="Official Phantom Blade Zero promotional gameplay screenshot; not verified as this quest location" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="shot-fallback" hidden>'+scene(id)+'</span>';
+const cardArt=id=>'<div class="guide-cover">'+shot(id)+'<span class="image-credit">Official promotional screenshot · © S-GAME</span></div>';
 const symbols={
 'true-ending':'<path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/>',
 'missables':'<path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="m16 16 2 2"/>',
