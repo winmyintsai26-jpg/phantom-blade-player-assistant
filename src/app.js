@@ -9,7 +9,7 @@ const steamArt={
 'missables':'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/extras/5ad11bac314430fa82234256e24d3092.avif?t=1793261976',
 'long-pillars':'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/extras/1f47cb4923e1bd2aa341d088a309a9e8.avif?t=1793261976',
 'healers-legacy':'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/extras/6286834726c17d549b014c1c9ec40b67.avif?t=1793261976',
-'severed-mindseal':'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/extras/ed6bfb7501a2eae4d346cd1c2d40040e.avif?t=1793261976'
+'severed-mindseal':'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976'
 };
 const fallbackArt='<div class="art-fallback" aria-hidden="true"><span>PHANTOM BLADE ZERO</span><small>GUIDE</small></div>';
 const imgFallback=()=>{document.querySelectorAll('img[data-guide-art]').forEach(img=>{img.addEventListener('error',()=>{img.style.display='none';img.parentElement.classList.add('failed-image')},{once:true})})};
