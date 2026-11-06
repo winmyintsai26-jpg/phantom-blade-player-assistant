@@ -1,7 +1,31 @@
-import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {guides} from './src/guides.js';
+const base='https://phantom-blade-player-assistant.netlify.app';
+const xmlEscape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+const attr=s=>xmlEscape(s);
 fs.rmSync('dist',{recursive:true,force:true});fs.mkdirSync('dist');
 for(const file of ['index.html','app.js','guides.js','ads.txt'])fs.copyFileSync(path.join('src',file),path.join('dist',file));
+const template=fs.readFileSync('src/index.html','utf8');
+const canonical=(url)=>'<link rel="canonical" href="'+url+'">';
+const home=template.replace('</head>',canonical(base+'/')+'<meta property="og:title" content="Phantom Blade Zero — Player Assistant"><meta property="og:description" content="Source-aware walkthroughs, quest checklists and troubleshooting."></head>');
+fs.writeFileSync('dist/index.html',home);
+for(const g of guides){
+ const url=base+'/guides/'+g.id+'/';
+ const title=g.title+' | Phantom Blade Zero Player Assistant';
+ const meta='<title>'+xmlEscape(title)+'</title>';
+ let page=template.replace(/<title>[^<]*<\/title>/,meta);
+ page=page.replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="'+attr(g.summary)+'">');
+ page=page.replace('</head>',canonical(url)+'<meta property="og:type" content="article"><meta property="og:title" content="'+attr(title)+'"><meta property="og:description" content="'+attr(g.summary)+'"><meta property="og:url" content="'+url+'"></head>');
+ page=page.replace('src="./app.js"','src="/app.js"');
+ const dir=path.join('dist','guides',g.id);fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,'index.html'),page);
+}
+const urls=[{loc:base+'/',lastmod:'2026-11-05'},...guides.map(g=>({loc:base+'/guides/'+g.id+'/',lastmod:g.updated}))];
+fs.writeFileSync('dist/sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+urls.map(u=>'  <url><loc>'+xmlEscape(u.loc)+'</loc><lastmod>'+u.lastmod+'</lastmod></url>').join('\n')+'\n</urlset>\n');
+fs.writeFileSync('dist/robots.txt','User-agent: *\nAllow: /\nSitemap: '+base+'/sitemap.xml\n');
 assert.match(fs.readFileSync('dist/index.html','utf8'),/app\.js/);
 assert.ok(fs.existsSync('dist/guides.js'));
 assert.match(fs.readFileSync('dist/ads.txt','utf8'),/^google\.com, pub-8915137919932402, DIRECT, f08c47fec0942fa0/m);
-console.log('PASS: dependency-free production build with guide data');
+assert.equal(fs.readdirSync('dist/guides').length,guides.length);
+console.log('PASS: '+guides.length+' indexable guide URLs, sitemap, robots and ads.txt');
