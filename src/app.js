@@ -9,7 +9,7 @@ const steamArt={
 'missables':'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/1cd52ca84a3d974c4206e9cb90231956324c5999/library_hero.jpg',
 'long-pillars':'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/50119189210964783051d73cb8f4fd3cdd8ad546/hero_capsule.jpg',
 'healers-legacy':'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg',
-'severed-mindseal':'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/8477e332081c0d28657885bf4b3c509823e289c9/page_bg_v6.jpg'
+'severed-mindseal':'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4115450/471e77854910665c03eb9a53ad06f2ac12903acd/library_capsule.jpg'
 };
 const cardArt=id=>'<div class="guide-cover"><img src="'+steamArt[id]+'" alt="Official Phantom Blade Zero promotional artwork, not a quest location screenshot" loading="lazy" decoding="async"><span class="image-credit">Official game art · S-GAME / Steam</span></div>';
 const symbols={
